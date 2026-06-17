@@ -2,8 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using InventoryApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 // SERVICES
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
