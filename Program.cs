@@ -3,22 +3,26 @@ using InventoryApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+// services
 builder.Services.AddControllers();
 
-// PostgreSQL connection
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Swagger (optional but useful)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure pipeline
+
+// 🔥 TEST ENDPOINT (MUST BE HERE - AFTER app = builder.Build())
+app.MapGet("/di-test", (AppDbContext db) =>
+{
+    return Results.Ok("DI WORKS");
+});
+
+
+// middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -26,7 +30,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();
