@@ -33,6 +33,8 @@ C:\Users\t480s\Documents\FINTECH\STOCK WEB APP\InventoryApi\bin\Debug\net8.0\Mic
 C:\Users\t480s\Documents\FINTECH\STOCK WEB APP\InventoryApi\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
 C:\Users\t480s\Documents\FINTECH\STOCK WEB APP\InventoryApi\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\t480s\Documents\FINTECH\STOCK WEB APP\InventoryApi\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\Users\t480s\Documents\FINTECH\STOCK WEB APP\InventoryApi\bin\Debug\net8.0\Npgsql.dll
+C:\Users\t480s\Documents\FINTECH\STOCK WEB APP\InventoryApi\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 C:\Users\t480s\Documents\FINTECH\STOCK WEB APP\InventoryApi\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\t480s\Documents\FINTECH\STOCK WEB APP\InventoryApi\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\t480s\Documents\FINTECH\STOCK WEB APP\InventoryApi\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
