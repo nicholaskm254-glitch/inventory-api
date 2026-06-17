@@ -1,9 +1,7 @@
-using Microsoft.EntityFrameworkCore;
-using InventoryApi.Data;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // SERVICES
 builder.Services.AddControllers();
@@ -24,7 +22,6 @@ var app = builder.Build();
 
 app.UseCors("AllowFrontend");
 
-// PIPELINE
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -32,14 +29,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
+
 app.MapControllers();
 
-
-// ✅ CRITICAL FIX FOR RENDER
+// IMPORTANT: Render port binding
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Urls.Add($"http://0.0.0.0:{port}");
-
-Console.WriteLine($"APP STARTED ON PORT {port}");
 
 app.Run();
