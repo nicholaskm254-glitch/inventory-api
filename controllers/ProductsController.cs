@@ -35,22 +35,22 @@ namespace InventoryApi.Controllers
 
         // ADD STOCK TO EXISTING PRODUCT
      [HttpPut("{id}/add-stock")]
-public async Task<IActionResult> AddStock(int id, [FromBody] int quantity)
+public async Task<IActionResult> AddStock(string id, [FromBody] int quantity)
 {
     var product = await _context.Products.FindAsync(id);
 
     if (product == null)
         return NotFound("Product not found");
 
+    // FIX NULL SAFETY
     product.QuantityInStock += quantity;
 
-    // OPTIONAL: log restock
     var transaction = new StockTransaction
     {
         ProductId = product.Id,
         Quantity = quantity,
         Type = "RESTOCK",
-        Date = DateTime.Now
+        Date = DateTime.UtcNow
     };
 
     _context.StockTransactions.Add(transaction);
@@ -64,4 +64,9 @@ public async Task<IActionResult> AddStock(int id, [FromBody] int quantity)
     });
 }
     }
-}
+}   
+
+
+
+
+    
