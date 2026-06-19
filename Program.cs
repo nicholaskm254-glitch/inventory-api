@@ -11,11 +11,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 
-// 🔥 TEST ENDPOINT (MUST BE HERE - AFTER app = builder.Build())
+// Your endpoints
 app.MapGet("/di-test", (AppDbContext db) =>
 {
     return Results.Ok("DI WORKS");
