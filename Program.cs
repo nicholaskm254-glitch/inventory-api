@@ -22,13 +22,8 @@ app.MapGet("/di-test", (AppDbContext db) =>
 });
 
 
-// middleware
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
