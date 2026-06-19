@@ -16,8 +16,7 @@ namespace InventoryApi.Data
 
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-            optionsBuilder.UseSqlServer(
-                config.GetConnectionString("DefaultConnection"));
+            optionsBuilder.UseNpgsql("Host=dpg-d8qffaugvqtc73a6akn0-a.oregon-postgres.render.com;Port=5432;Database=inventory_iw70;Username=nicholas;Password=hlmCentENKLuImDO2aaMpKc6bhDfhaXq;Ssl Mode=Require");
 
             return new AppDbContext(optionsBuilder.Options);
         }
