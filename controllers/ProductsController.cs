@@ -35,7 +35,7 @@ namespace InventoryApi.Controllers
 
         // ADD STOCK TO EXISTING PRODUCT
      [HttpPut("{id}/add-stock")]
-public async Task<IActionResult> AddStock(string id, [FromBody] int quantity)
+public async Task<IActionResult> AddStock(int id, [FromBody] int quantity)
 {
     var product = await _context.Products.FindAsync(id);
 
