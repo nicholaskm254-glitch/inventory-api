@@ -27,6 +27,11 @@ namespace InventoryApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProduct([FromBody] Product product)
         {
+            if (product == null || string.IsNullOrWhiteSpace(product.Name))
+                return BadRequest("Product name is required.");
+
+            product.Name = product.Name.ToUpperInvariant();
+            product.SKU = product.SKU?.ToUpperInvariant() ?? string.Empty; // 🔥 FORCE UPPERCASE
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
