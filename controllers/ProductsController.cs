@@ -24,20 +24,43 @@ namespace InventoryApi.Controllers
         }
 
         // ADD PRODUCT
-        [HttpPost]
-        public async Task<IActionResult> AddProduct([FromBody] Product product)
-        {
-            if (product == null || string.IsNullOrWhiteSpace(product.Name))
-                return BadRequest("Product name is required.");
+       [HttpPost]
+public async Task<IActionResult> AddProduct(Product product)
+{
+    if (string.IsNullOrWhiteSpace(product.Name) || string.IsNullOrWhiteSpace(product.SKU))
+    {
+        return BadRequest("Product Name and SKU are required");
+    }
 
-            product.Name = product.Name.ToUpperInvariant();
-            product.SKU = product.SKU?.ToUpperInvariant() ?? string.Empty; // 🔥 FORCE UPPERCASE
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+    // normalize
+    product.Name = product.Name.ToUpper();
+    product.SKU = product.SKU.ToUpper();
 
-            return Ok(product);
-        }
+    // 🔍 check duplicate SKU (primary rule)
+    var exists = await _context.Products.AnyAsync(p =>
+        p.SKU == product.SKU
+    );
 
+    if (exists)
+    {
+        return BadRequest("Product with this SKU already exists");
+    }
+
+    // OPTIONAL: also prevent duplicate name + SKU combo
+    var nameExists = await _context.Products.AnyAsync(p =>
+        p.Name == product.Name && p.SKU == product.SKU
+    );
+
+    if (nameExists)
+    {
+        return BadRequest("Product already exists");
+    }
+
+    _context.Products.Add(product);
+    await _context.SaveChangesAsync();
+
+    return Ok(product);
+}
 
         // ADD STOCK TO EXISTING PRODUCT
      [HttpPut("{id}/add-stock")]

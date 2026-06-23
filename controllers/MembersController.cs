@@ -26,12 +26,17 @@ namespace InventoryApi.Controllers
 
         // POST: api/members
         [HttpPost]
-        public async Task<IActionResult> AddMember([FromBody] Member member)
+        public async Task<IActionResult> AddMember(Member member)
         {
-            if (string.IsNullOrWhiteSpace(member.FullName) ||
-                string.IsNullOrWhiteSpace(member.Role))
+            // normalize (important since you're using uppercase)
+            member.FullName = member.FullName?.ToUpper() ?? string.Empty;
+            member.Role = member.Role?.ToUpper() ?? string.Empty;
+
+            var exists = await _context.Members.AnyAsync(m => m.FullName == member.FullName && m.Role == member.Role);
+
+            if (exists)
             {
-                return BadRequest("FullName and Role are required");
+                return BadRequest("Member already exists");
             }
 
             _context.Members.Add(member);
@@ -39,9 +44,10 @@ namespace InventoryApi.Controllers
 
             return Ok(member);
         }
+
         [HttpDelete("{id}")]
-public async Task<IActionResult> DeleteMember(int id)
-{
+        public async Task<IActionResult> DeleteMember(int id)
+        {
     var member = await _context.Members.FindAsync(id);
 
     if (member == null)
