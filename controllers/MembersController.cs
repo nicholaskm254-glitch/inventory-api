@@ -39,5 +39,18 @@ namespace InventoryApi.Controllers
 
             return Ok(member);
         }
+        [HttpDelete("{id}")]
+public async Task<IActionResult> DeleteMember(int id)
+{
+    var member = await _context.Members.FindAsync(id);
+
+    if (member == null)
+        return NotFound("Member not found");
+
+    _context.Members.Remove(member);
+    await _context.SaveChangesAsync();
+
+    return Ok(new { message = "Member deleted successfully" });
+}
     }
 }
