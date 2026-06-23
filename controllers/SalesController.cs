@@ -42,31 +42,45 @@ public async Task<IActionResult> GetSales()
     return Ok(sales);
 }
         [HttpPost]
-        public async Task<IActionResult> SellProduct([FromBody] SaleRequest request)
+      [HttpPost]
+public async Task<IActionResult> CreateSale(SaleRequest dto)
+{
+    try
+    {
+        var product = await _context.Products
+            .FirstOrDefaultAsync(p => p.Id == dto.ProductId);
+
+        if (product == null)
+            return BadRequest("Product not found");
+
+        if (dto.Quantity <= 0)
+            return BadRequest("Quantity must be greater than 0");
+
+        if (product.QuantityInStock < dto.Quantity)
+            return BadRequest("Not enough stock");
+
+        // ✅ SIMPLE DIRECT UPDATE (NO REFLECTION)
+        product.QuantityInStock -= dto.Quantity;
+
+        var sale = new StockTransaction
         {
-            var product = await _context.Products.FindAsync(request.ProductId);
+            ProductId = dto.ProductId,
+            Quantity = dto.Quantity,
+            Type = "Sale",
+            Date = DateTime.UtcNow
+        };
 
-            if (product == null)
-                return NotFound("Product not found");
+        _context.StockTransactions.Add(sale);
 
-            if (product.QuantityInStock < request.Quantity)
-                return BadRequest("Not enough stock");
+        await _context.SaveChangesAsync();
 
-            product.QuantityInStock -= request.Quantity;
+        return Ok(sale);
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, ex.ToString());
+    }
+}
 
-            var transaction = new StockTransaction
-            {
-                ProductId = request.ProductId,
-                Quantity = request.Quantity,
-                Type = "SALE",
-                Date = DateTime.Now
-            };
-
-            _context.StockTransactions.Add(transaction);
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Sale completed" });
-        }
     }
 }
