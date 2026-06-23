@@ -20,7 +20,10 @@ namespace InventoryApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMembers()
         {
-            var members = await _context.Members.ToListAsync();
+            var members = await _context.Members
+                .AsNoTracking()
+                .ToListAsync();
+
             return Ok(members);
         }
 
@@ -28,35 +31,48 @@ namespace InventoryApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddMember(Member member)
         {
-            // normalize (important since you're using uppercase)
-            member.FullName = member.FullName?.ToUpper() ?? string.Empty;
-            member.Role = member.Role?.ToUpper() ?? string.Empty;
+            // 🔹 Validation
+            if (member == null)
+                return BadRequest("Invalid member data");
 
-            var exists = await _context.Members.AnyAsync(m => m.FullName == member.FullName && m.Role == member.Role);
+            if (string.IsNullOrWhiteSpace(member.FullName) ||
+                string.IsNullOrWhiteSpace(member.Role))
+            {
+                return BadRequest("FullName and Role are required");
+            }
+
+            // 🔹 Normalize data
+            member.FullName = member.FullName.Trim().ToUpper();
+            member.Role = member.Role.Trim().ToUpper();
+
+            // 🔹 Check duplicates
+            var exists = await _context.Members.AnyAsync(m =>
+                m.FullName == member.FullName &&
+                m.Role == member.Role
+            );
 
             if (exists)
-            {
-                return BadRequest("Member already exists");
-            }
+                return Conflict("Member already exists");
 
             _context.Members.Add(member);
             await _context.SaveChangesAsync();
 
-            return Ok(member);
+            return CreatedAtAction(nameof(GetMembers), member);
         }
 
+        // DELETE: api/members/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMember(int id)
         {
-    var member = await _context.Members.FindAsync(id);
+            var member = await _context.Members.FindAsync(id);
 
-    if (member == null)
-        return NotFound("Member not found");
+            if (member == null)
+                return NotFound("Member not found");
 
-    _context.Members.Remove(member);
-    await _context.SaveChangesAsync();
+            _context.Members.Remove(member);
+            await _context.SaveChangesAsync();
 
-    return Ok(new { message = "Member deleted successfully" });
-}
+            return NoContent();
+        }
     }
 }
