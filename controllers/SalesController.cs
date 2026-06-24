@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using InventoryApi.Data;
 using InventoryApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InventoryApi.Controllers
-{
+{   [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class SalesController : ControllerBase
