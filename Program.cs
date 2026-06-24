@@ -6,78 +6,107 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// =======================
 // SERVICES
+// =======================
 builder.Services.AddControllers();
 
-// CORS
+// =======================
+// CORS (FRONTEND ONLY)
+// =======================
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .AllowAnyOrigin()
+            .WithOrigins("https://inventory-system-seven-delta.vercel.app")
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
 });
 
+// =======================
 // DATABASE
+// =======================
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    ));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
-// JWT AUTHENTICATION
+// =======================
+// JWT CONFIG (SAFE)
+// =======================
 var jwtKey = builder.Configuration["Jwt:Key"];
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
 
+if (string.IsNullOrEmpty(jwtKey))
+{
+    throw new Exception("JWT Key is missing in configuration (Render env vars issue)");
+}
+
+// =======================
+// AUTHENTICATION
+// =======================
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters =
-            new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
 
-                ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
 
-                IssuerSigningKey =
-                    new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtKey!)
-                    )
-            };
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtKey)
+            )
+        };
     });
 
 builder.Services.AddAuthorization();
 
+// =======================
 // SWAGGER
+// =======================
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// AUTO MIGRATION
+// =======================
+// SAFE MIGRATION (PREVENT CRASH)
+// =======================
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+    try
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Database migration failed: " + ex.Message);
+    }
 }
 
+// =======================
 // TEST ENDPOINT
+// =======================
 app.MapGet("/di-test", () => "DI WORKS");
 
-// SWAGGER
+// =======================
+// PIPELINE ORDER (IMPORTANT)
+// =======================
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// CORS
-app.UseCors("AllowFrontend");
-
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
