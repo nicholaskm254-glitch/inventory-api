@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "g+XAZ0ZOIBg=",
+  "dgSpecHash": "k3FQRyL6JAg=",
   "success": true,
   "projectFilePath": "C:\\Users\\t480s\\Documents\\FINTECH\\STOCK WEB APP\\InventoryApi\\InventoryApi.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\t480s\\.nuget\\packages\\bcrypt.net-next\\4.2.0\\bcrypt.net-next.4.2.0.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.7\\microsoft.aspnetcore.authentication.jwtbearer.8.0.7.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
+    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.bcl.cryptography\\10.0.2\\microsoft.bcl.cryptography.10.0.2.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.3.3\\microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\microsoft.codeanalysis.common\\4.5.0\\microsoft.codeanalysis.common.4.5.0.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\microsoft.codeanalysis.csharp\\4.5.0\\microsoft.codeanalysis.csharp.4.5.0.nupkg.sha512",
@@ -28,7 +31,13 @@
     "C:\\Users\\t480s\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.0\\microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\microsoft.extensions.options\\8.0.0\\microsoft.extensions.options.8.0.0.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
-    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.openapi\\2.7.5\\microsoft.openapi.2.7.5.nupkg.sha512",
+    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.identitymodel.abstractions\\8.19.1\\microsoft.identitymodel.abstractions.8.19.1.nupkg.sha512",
+    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\8.19.1\\microsoft.identitymodel.jsonwebtokens.8.19.1.nupkg.sha512",
+    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.identitymodel.logging\\8.19.1\\microsoft.identitymodel.logging.8.19.1.nupkg.sha512",
+    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.identitymodel.protocols\\7.1.2\\microsoft.identitymodel.protocols.7.1.2.nupkg.sha512",
+    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.identitymodel.protocols.openidconnect\\7.1.2\\microsoft.identitymodel.protocols.openidconnect.7.1.2.nupkg.sha512",
+    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.identitymodel.tokens\\8.19.1\\microsoft.identitymodel.tokens.8.19.1.nupkg.sha512",
+    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.openapi\\3.7.0\\microsoft.openapi.3.7.0.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\npgsql\\8.0.0\\npgsql.8.0.0.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\8.0.0\\npgsql.entityframeworkcore.postgresql.8.0.0.nupkg.sha512",
@@ -44,6 +53,8 @@
     "C:\\Users\\t480s\\.nuget\\packages\\system.composition.hosting\\6.0.0\\system.composition.hosting.6.0.0.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\system.composition.runtime\\6.0.0\\system.composition.runtime.6.0.0.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\system.composition.typedparts\\6.0.0\\system.composition.typedparts.6.0.0.nupkg.sha512",
+    "C:\\Users\\t480s\\.nuget\\packages\\system.formats.asn1\\10.0.2\\system.formats.asn1.10.0.2.nupkg.sha512",
+    "C:\\Users\\t480s\\.nuget\\packages\\system.identitymodel.tokens.jwt\\8.19.1\\system.identitymodel.tokens.jwt.8.19.1.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\system.io.pipelines\\6.0.3\\system.io.pipelines.6.0.3.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\system.reflection.metadata\\6.0.1\\system.reflection.metadata.6.0.1.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
@@ -51,10 +62,10 @@
     "C:\\Users\\t480s\\.nuget\\packages\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\system.text.json\\8.0.5\\system.text.json.8.0.5.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\system.threading.channels\\6.0.0\\system.threading.channels.6.0.0.nupkg.sha512",
-    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.28\\microsoft.netcore.app.ref.8.0.28.nupkg.sha512",
-    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.28\\microsoft.windowsdesktop.app.ref.8.0.28.nupkg.sha512",
     "C:\\Users\\t480s\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.28\\microsoft.aspnetcore.app.ref.8.0.28.nupkg.sha512",
-    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.28\\microsoft.netcore.app.host.win-x64.8.0.28.nupkg.sha512"
+    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.28\\microsoft.netcore.app.host.win-x64.8.0.28.nupkg.sha512",
+    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.28\\microsoft.netcore.app.ref.8.0.28.nupkg.sha512",
+    "C:\\Users\\t480s\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.28\\microsoft.windowsdesktop.app.ref.8.0.28.nupkg.sha512"
   ],
   "logs": []
 }

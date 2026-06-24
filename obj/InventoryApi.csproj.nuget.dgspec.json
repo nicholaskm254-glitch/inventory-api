@@ -53,6 +53,14 @@
           "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.2.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.7, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.8, )"
@@ -69,6 +77,10 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
+            "Microsoft.OpenApi": {
+              "target": "Package",
+              "version": "[3.7.0, )"
+            },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[8.0.0, )"
@@ -76,6 +88,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[10.2.1, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.19.1, )"
             }
           },
           "imports": [

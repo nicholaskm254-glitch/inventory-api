@@ -11,7 +11,12 @@ namespace InventoryApi.Data
         }
 
         public DbSet<Product> Products { get; set; }
+
         public DbSet<Member> Members { get; set; }
+
         public DbSet<StockTransaction> StockTransactions { get; set; }
+
+        // Authentication
+        public DbSet<User> Users { get; set; }
     }
 }
