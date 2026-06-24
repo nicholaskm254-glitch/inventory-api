@@ -72,41 +72,51 @@ public class AuthController : ControllerBase
             return Unauthorized("Invalid email or password");
         }
 
-        var claims = new[]
+        try
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.FullName),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role)
-        };
-
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(
-                _configuration["Jwt:Key"]!));
-
-        var credentials = new SigningCredentials(
-            key,
-            SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddDays(1),
-            signingCredentials: credentials);
-
-        return Ok(new
-        {
-            token = new JwtSecurityTokenHandler()
-                .WriteToken(token),
-            user = new
+            var claims = new[]
             {
-                user.Id,
-                user.FullName,
-                user.Email,
-                user.Role
-            }
-        });
-        
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
+
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(
+                    _configuration["Jwt:Key"]!));
+
+            var credentials = new SigningCredentials(
+                key,
+                SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(1),
+                signingCredentials: credentials);
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler()
+                    .WriteToken(token),
+                user = new
+                {
+                    user.Id,
+                    user.FullName,
+                    user.Email,
+                    user.Role
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                error = ex.Message,
+                inner = ex.InnerException?.Message
+            });
+        }
     }
 }
