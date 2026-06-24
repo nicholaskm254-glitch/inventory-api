@@ -49,24 +49,7 @@ public class AuthController : ControllerBase
             message = "User registered successfully"
         });
     }
-    [HttpDelete("users/{id}")]
-public async Task<IActionResult> DeleteUser(int id)
-{
-    var user = await _context.Users.FindAsync(id);
-
-    if (user == null)
-    {
-        return NotFound("User not found");
-    }
-
-    _context.Users.Remove(user);
-    await _context.SaveChangesAsync();
-
-    return Ok(new
-    {
-        message = "User deleted successfully"
-    });
-  }
+   
 
     [HttpPost("login")]
     public IActionResult Login(LoginDto dto)
