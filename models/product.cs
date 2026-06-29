@@ -10,5 +10,7 @@ namespace InventoryApi.Models
         [Precision(18, 2)]
         public decimal Price { get; set; }
         public int QuantityInStock { get; set; }
+
+    public int CompanyId { get; set; }
     }
 }

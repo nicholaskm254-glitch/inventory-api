@@ -15,6 +15,12 @@ public class AuthController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IConfiguration _configuration;
+    private int GetCompanyId()
+{
+    return int.Parse(
+        User.FindFirst("CompanyId")!.Value
+    );
+}
 
     public AuthController(
         AppDbContext context,
@@ -79,7 +85,8 @@ public class AuthController : ControllerBase
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.FullName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim("CompanyId", user.CompanyId.ToString())
             };
 
             var key = new SymmetricSecurityKey(

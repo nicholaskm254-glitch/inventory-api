@@ -11,6 +11,12 @@ namespace InventoryApi.Controllers
     public class MembersController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private int GetCompanyId()
+{
+    return int.Parse(
+        User.FindFirst("CompanyId")!.Value
+    );
+}
 
         public MembersController(AppDbContext context)
         {
@@ -18,15 +24,18 @@ namespace InventoryApi.Controllers
         }
 
         // GET: api/members
-        [HttpGet]
-        public async Task<IActionResult> GetMembers()
-        {
-            var members = await _context.Members
-                .AsNoTracking()
-                .ToListAsync();
+         [HttpGet]
+public async Task<IActionResult> GetMembers()
+{
+    var companyId = GetCompanyId();
 
-            return Ok(members);
-        }
+    var members = await _context.Members
+        .AsNoTracking()
+        .Where(m => m.CompanyId == companyId)
+        .ToListAsync();
+
+    return Ok(members);
+}
 
         // POST: api/members
         [HttpPost]

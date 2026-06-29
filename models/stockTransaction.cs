@@ -13,5 +13,7 @@ public class StockTransaction
     public string Type { get; set; } = "";
 
     public DateTime Date { get; set; } = DateTime.Now;
+
+    public int CompanyId { get; set; }
 }
 }

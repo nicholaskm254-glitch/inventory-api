@@ -11,6 +11,12 @@ namespace InventoryApi.Controllers
     public class SalesController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private int GetCompanyId()
+{
+    return int.Parse(
+        User.FindFirst("CompanyId")!.Value
+    );
+}
 
         public SalesController(AppDbContext context)
         {
@@ -22,10 +28,13 @@ namespace InventoryApi.Controllers
             public int ProductId { get; set; }
             public int Quantity { get; set; }
         }
-[HttpGet]
+     [HttpGet]
 public async Task<IActionResult> GetSales()
 {
+    var companyId = GetCompanyId();
+
     var sales = await _context.StockTransactions
+        .Where(s => s.CompanyId == companyId)
         .Include(s => s.Product)
         .OrderByDescending(s => s.Date)
         .Select(s => new
@@ -42,7 +51,7 @@ public async Task<IActionResult> GetSales()
 
     return Ok(sales);
 }
-        [HttpPost]
+        
       [HttpPost]
 public async Task<IActionResult> CreateSale(SaleRequest dto)
 {

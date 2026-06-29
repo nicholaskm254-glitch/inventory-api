@@ -11,6 +11,12 @@ namespace InventoryApi.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private int GetCompanyId()
+{
+    return int.Parse(
+        User.FindFirst("CompanyId")!.Value
+    );
+}
 
         public ProductsController(AppDbContext context)
         {
@@ -18,12 +24,17 @@ namespace InventoryApi.Controllers
         }
 
         // GET ALL PRODUCTS
-        [HttpGet]
-        public async Task<IActionResult> GetProducts()
-        {
-            return Ok(await _context.Products.ToListAsync());
-        }
+       [HttpGet]
+public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+{
+    var companyId = GetCompanyId();
 
+    var products = await _context.Products
+        .Where(p => p.CompanyId == companyId)
+        .ToListAsync();
+
+    return Ok(products);
+}
         // ADD PRODUCT
        [HttpPost]
 public async Task<IActionResult> AddProduct(Product product)

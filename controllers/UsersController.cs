@@ -12,6 +12,7 @@ public class UpdateUserDto
     public string Email { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
 }
+
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
@@ -25,13 +26,32 @@ public class UsersController : ControllerBase
         _context = context;
     }
 
-    // GET: api/users?page=1&pageSize=10
-    [HttpGet]
-    public async Task<IActionResult> GetUsers(int page = 1, int pageSize = 10)
+    // ============================
+    // GET COMPANY ID FROM JWT
+    // ============================
+    private int GetCompanyId()
     {
+        return int.Parse(
+            User.FindFirst("CompanyId")!.Value
+        );
+    }
+
+    // ============================
+    // GET ALL USERS
+    // api/users?page=1&pageSize=10
+    // ============================
+    [HttpGet]
+    public async Task<IActionResult> GetUsers(
+        int page = 1,
+        int pageSize = 10)
+    {
+        var companyId = GetCompanyId();
+
         var users = await _context.Users
             .AsNoTracking()
-            .Where(u => !u.IsDeleted) // ✅ important
+            .Where(u =>
+                !u.IsDeleted &&
+                u.CompanyId == companyId)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(u => new
@@ -46,13 +66,21 @@ public class UsersController : ControllerBase
         return Ok(users);
     }
 
-    // GET: api/users/5
+    // ============================
+    // GET SINGLE USER
+    // api/users/5
+    // ============================
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUser(int id)
     {
+        var companyId = GetCompanyId();
+
         var user = await _context.Users
             .AsNoTracking()
-            .Where(u => u.Id == id && !u.IsDeleted)
+            .Where(u =>
+                u.Id == id &&
+                !u.IsDeleted &&
+                u.CompanyId == companyId)
             .Select(u => new
             {
                 u.Id,
@@ -68,13 +96,24 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
-    // PUT: api/users/5
+    // ============================
+    // UPDATE USER
+    // api/users/5
+    // ============================
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto dto)
+    public async Task<IActionResult> UpdateUser(
+        int id,
+        [FromBody] UpdateUserDto dto)
     {
-        var user = await _context.Users.FindAsync(id);
+        var companyId = GetCompanyId();
 
-        if (user == null || user.IsDeleted)
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u =>
+                u.Id == id &&
+                !u.IsDeleted &&
+                u.CompanyId == companyId);
+
+        if (user == null)
             return NotFound();
 
         user.FullName = dto.FullName;
@@ -86,16 +125,25 @@ public class UsersController : ControllerBase
         return NoContent();
     }
 
-    // DELETE: api/users/5 (SOFT DELETE FIX)
+    // ============================
+    // SOFT DELETE USER
+    // api/users/5
+    // ============================
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        var user = await _context.Users.FindAsync(id);
+        var companyId = GetCompanyId();
 
-        if (user == null || user.IsDeleted)
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u =>
+                u.Id == id &&
+                !u.IsDeleted &&
+                u.CompanyId == companyId);
+
+        if (user == null)
             return NotFound();
 
-        user.IsDeleted = true; // ✅ soft delete instead of remove
+        user.IsDeleted = true;
 
         await _context.SaveChangesAsync();
 
