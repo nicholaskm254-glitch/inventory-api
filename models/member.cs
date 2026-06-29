@@ -6,6 +6,7 @@ namespace InventoryApi.Models
         public required string FullName { get; set; }
         public string? Role { get; set; }
 
-    public int CompanyId { get; set; }
+        public int CompanyId { get; set; }
+        public Company Company { get; set; } = null!;
     }
 }

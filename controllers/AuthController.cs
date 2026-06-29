@@ -32,30 +32,44 @@ public class AuthController : ControllerBase
     
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterDto dto)
+public async Task<IActionResult> Register(RegisterDto dto)
+{
+    if (_context.Users.Any(u => u.Email == dto.Email))
     {
-        if (_context.Users.Any(u => u.Email == dto.Email))
-        {
-            return BadRequest("Email already exists");
-        }
-
-        var user = new User
-        {
-            FullName = dto.FullName,
-            Email = dto.Email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-            Role = "User"
-        };
-
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-
-        return Ok(new
-        {
-            message = "User registered successfully"
-        });
+        return BadRequest("Email already exists");
     }
-   
+
+    // Create a company for the first user
+    var company = new Company
+    {
+        Name = $"{dto.FullName}'s Company"
+    };
+
+    // Use generic Add in case the AppDbContext doesn't expose a Companies DbSet
+    _context.Add(company);
+    await _context.SaveChangesAsync();
+
+    var user = new User
+    {
+        FullName = dto.FullName,
+        Email = dto.Email,
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+
+        // First registered user becomes admin
+        Role = "Admin",
+
+        // Link user to company
+        CompanyId = company.Id
+    };
+
+    _context.Users.Add(user);
+    await _context.SaveChangesAsync();
+
+    return Ok(new
+    {
+        message = "User registered successfully"
+    });
+}
 
     [HttpPost("login")]
     public IActionResult Login(LoginDto dto)
