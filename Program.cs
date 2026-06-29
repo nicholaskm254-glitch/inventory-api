@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // =======================
@@ -13,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // =======================
-// CORS (FRONTEND ONLY)
+// CORS
 // =======================
 builder.Services.AddCors(options =>
 {
@@ -30,11 +29,13 @@ builder.Services.AddCors(options =>
 // DATABASE
 // =======================
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    )
 );
 
 // =======================
-// JWT CONFIG (SAFE)
+// JWT SETTINGS
 // =======================
 var jwtKey = builder.Configuration["Jwt:Key"];
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
@@ -42,30 +43,36 @@ var jwtAudience = builder.Configuration["Jwt:Audience"];
 
 if (string.IsNullOrEmpty(jwtKey))
 {
-    throw new Exception("JWT Key is missing in configuration (Render env vars issue)");
+    throw new Exception(
+        "JWT Key is missing in configuration"
+    );
 }
 
 // =======================
 // AUTHENTICATION
 // =======================
 builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddAuthentication(
+        JwtBearerDefaults.AuthenticationScheme
+    )
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
 
-            ValidIssuer = jwtIssuer,
-            ValidAudience = jwtAudience,
+                ValidIssuer = jwtIssuer,
+                ValidAudience = jwtAudience,
 
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtKey)
-            )
-        };
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtKey)
+                    )
+            };
     });
 
 builder.Services.AddAuthorization();
@@ -79,28 +86,36 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // =======================
-// SAFE MIGRATION (PREVENT CRASH)
+// DATABASE MIGRATION
 // =======================
 using (var scope = app.Services.CreateScope())
 {
     try
     {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var db = scope.ServiceProvider
+            .GetRequiredService<AppDbContext>();
+
         db.Database.Migrate();
     }
     catch (Exception ex)
     {
-        Console.WriteLine("Database migration failed: " + ex.Message);
+        Console.WriteLine(
+            "Database migration failed: "
+            + ex.Message
+        );
     }
 }
 
 // =======================
 // TEST ENDPOINT
 // =======================
-app.MapGet("/di-test", () => "DI WORKS");
+app.MapGet(
+    "/di-test",
+    () => "DI WORKS"
+);
 
 // =======================
-// PIPELINE ORDER (IMPORTANT)
+// PIPELINE
 // =======================
 app.UseSwagger();
 app.UseSwaggerUI();
