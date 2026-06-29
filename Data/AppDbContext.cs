@@ -9,7 +9,7 @@ namespace InventoryApi.Data
             : base(options)
         {
         }
-
+        public DbSet<Company> Companies { get; set; }
         public DbSet<Product> Products { get; set; }
 
         public DbSet<Member> Members { get; set; }
