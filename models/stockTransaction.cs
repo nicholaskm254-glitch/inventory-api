@@ -15,6 +15,7 @@ public class StockTransaction
     public DateTime Date { get; set; } = DateTime.Now;
 
     public int CompanyId { get; set; }
-    public Company Company { get; set; } = null!;
+    public Company? Company { get; set; }
+
 }
 }

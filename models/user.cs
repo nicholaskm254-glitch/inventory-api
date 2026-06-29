@@ -14,7 +14,8 @@ public class User
 
     public int CompanyId { get; set; }
 
-    public Company Company { get; set; } = null!;
+    public Company? Company { get; set; }
+
     public bool IsDeleted { get; set; } = false;
    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

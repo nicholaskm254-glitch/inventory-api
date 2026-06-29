@@ -3,6 +3,7 @@ using InventoryApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace InventoryApi.Controllers;
 
@@ -26,9 +27,9 @@ public class UsersController : ControllerBase
         _context = context;
     }
 
-    // ============================
+    // =====================================
     // GET COMPANY ID FROM JWT
-    // ============================
+    // =====================================
     private int GetCompanyId()
     {
         return int.Parse(
@@ -36,10 +37,19 @@ public class UsersController : ControllerBase
         );
     }
 
-    // ============================
-    // GET ALL USERS
-    // api/users?page=1&pageSize=10
-    // ============================
+    // =====================================
+    // GET CURRENT USER ID
+    // =====================================
+    private int GetUserId()
+    {
+        return int.Parse(
+            User.FindFirst(ClaimTypes.NameIdentifier)!.Value
+        );
+    }
+
+    // =====================================
+    // GET USERS
+    // =====================================
     [HttpGet]
     public async Task<IActionResult> GetUsers(
         int page = 1,
@@ -59,17 +69,17 @@ public class UsersController : ControllerBase
                 u.Id,
                 u.FullName,
                 u.Email,
-                u.Role
+                u.Role,
+                u.CreatedAt
             })
             .ToListAsync();
 
         return Ok(users);
     }
 
-    // ============================
-    // GET SINGLE USER
-    // api/users/5
-    // ============================
+    // =====================================
+    // GET USER
+    // =====================================
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUser(int id)
     {
@@ -86,7 +96,8 @@ public class UsersController : ControllerBase
                 u.Id,
                 u.FullName,
                 u.Email,
-                u.Role
+                u.Role,
+                u.CreatedAt
             })
             .FirstOrDefaultAsync();
 
@@ -96,10 +107,9 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
-    // ============================
+    // =====================================
     // UPDATE USER
-    // api/users/5
-    // ============================
+    // =====================================
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(
         int id,
@@ -116,6 +126,21 @@ public class UsersController : ControllerBase
         if (user == null)
             return NotFound();
 
+        dto.Email = dto.Email.Trim().ToLower();
+        dto.FullName = dto.FullName.Trim();
+        dto.Role = dto.Role.Trim();
+
+        var emailExists = await _context.Users
+            .AnyAsync(u =>
+                u.Id != id &&
+                !u.IsDeleted &&
+                u.CompanyId == companyId &&
+                u.Email == dto.Email);
+
+        if (emailExists)
+            return BadRequest(
+                "Email already exists");
+
         user.FullName = dto.FullName;
         user.Email = dto.Email;
         user.Role = dto.Role;
@@ -125,14 +150,20 @@ public class UsersController : ControllerBase
         return NoContent();
     }
 
-    // ============================
+    // =====================================
     // SOFT DELETE USER
-    // api/users/5
-    // ============================
+    // =====================================
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
         var companyId = GetCompanyId();
+        var currentUserId = GetUserId();
+
+        if (id == currentUserId)
+        {
+            return BadRequest(
+                "You cannot delete your own account");
+        }
 
         var user = await _context.Users
             .FirstOrDefaultAsync(u =>

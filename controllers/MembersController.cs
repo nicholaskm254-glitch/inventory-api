@@ -55,14 +55,19 @@ public async Task<IActionResult> GetMembers()
             member.FullName = member.FullName.Trim().ToUpper();
             member.Role = member.Role.Trim().ToUpper();
 
-            // 🔹 Check duplicates
-            var exists = await _context.Members.AnyAsync(m =>
-                m.FullName == member.FullName &&
-                m.Role == member.Role
-            );
+           var companyId = GetCompanyId();
+
+var exists = await _context.Members.AnyAsync(m =>
+    m.CompanyId == companyId &&
+    m.FullName == member.FullName &&
+    m.Role == member.Role
+);
 
             if (exists)
                 return Conflict("Member already exists");
+
+            // 🔹 Assign tenant/company
+            member.CompanyId = GetCompanyId();
 
             _context.Members.Add(member);
             await _context.SaveChangesAsync();
@@ -74,10 +79,15 @@ public async Task<IActionResult> GetMembers()
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMember(int id)
         {
-            var member = await _context.Members.FindAsync(id);
+           var companyId = GetCompanyId();
 
-            if (member == null)
-                return NotFound("Member not found");
+var member = await _context.Members
+    .FirstOrDefaultAsync(m =>
+        m.Id == id &&
+        m.CompanyId == companyId);
+
+if (member == null)
+    return NotFound();
 
             _context.Members.Remove(member);
             await _context.SaveChangesAsync();
